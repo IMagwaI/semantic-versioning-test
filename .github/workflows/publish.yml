@@ -47,15 +47,16 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Update package.json version
       run: |
-        current_version=$(node -p "require('../../package.json').version")
+        current_version=$(node -p "require('./package.json').version")
         new_version=$(npx semantic-release-cli --dry-run | jq -r .nextRelease.version)
         if [ "$current_version" != "$new_version" ]; then
           echo "Updating package.json version to $new_version"
-          npx json -I -f ../../package.json -e "this.version='$new_version'"
-          git add ../../package.json
+          npx json -I -f ./package.json -e "this.version='$new_version'"
+          git add ./package.json
           git commit -m "chore(release): $new_version"
           git push
         else
           echo "No version update needed."
         fi
-      working-directory: .github/workflows
+      working-directory: ./
+
